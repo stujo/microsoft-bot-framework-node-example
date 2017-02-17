@@ -25,6 +25,11 @@ server.post('/v1/api/messages', connector.listen());
 // Bots Dialogs
 //=========================================================
 
-bot.dialog('/', function(session) {
-  session.send('Hello World from ' + process.env.MICROSOFT_BOT_APP_NAME);
-});
+bot.dialog('/', [
+  function(session) {
+    builder.Prompts.text(session, 'Hi! What is your name?');
+  },
+  function(session, results) {
+    session.send('Hello %s!', results.response);
+  }
+]);
