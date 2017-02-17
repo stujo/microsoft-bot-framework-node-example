@@ -10,7 +10,7 @@ var builder = require('botbuilder');
 // Setup Restify Server
 var server = restify.createServer();
 server.listen(process.env.port || process.env.PORT || 3978, function() {
-  console.log('%s listening to %s', server.name, server.url);
+  console.log('%s listening to %s', server.name, server.url); // eslint-disable-line
 });
 
 // Create chat bot
@@ -24,12 +24,37 @@ server.post('/v1/api/messages', connector.listen());
 //=========================================================
 // Bots Dialogs
 //=========================================================
+var intents = new builder.IntentDialog();
+bot.dialog('/', intents);
 
-bot.dialog('/', [
+intents.matches(/^change name/i, [
+  function(session) {
+    session.beginDialog('/profile');
+  },
+  function(session, _results) {
+    session.send('Ok... Changed your name to %s', session.userData.name);
+  }
+]);
+
+intents.onDefault([
+  function(session, args, next) {
+    if (!session.userData.name) {
+      session.beginDialog('/profile');
+    } else {
+      next();
+    }
+  },
+  function(session, _results) {
+    session.send('Hello %s!', session.userData.name);
+  }
+]);
+
+bot.dialog('/profile', [
   function(session) {
     builder.Prompts.text(session, 'Hi! What is your name?');
   },
   function(session, results) {
-    session.send('Hello %s!', results.response);
+    session.userData.name = results.response;
+    session.endDialog();
   }
 ]);

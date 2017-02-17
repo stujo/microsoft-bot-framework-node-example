@@ -148,6 +148,12 @@ $ git add .
 $ git commit -m'Initial Bot Template'
 ```
 
+## Storing Data
+
+* userData stores information globally for the user across all conversations.
+* conversationData stores information globally for a single conversation. This data is visible to everyone within the conversation so care should be used to what’s stored there. It’s disabled by default and needs to be enabled using the bots persistConversationData setting.
+* privateConversationData stores information globally for a single conversation but its private data for the current user. This data spans all dialogs so it’s useful for storing temporary state that you want cleaned up when the conversation ends.
+* dialogData persists information for a single dialog instance. This is essential for storing temporary information in between the steps of a waterfall.
 
 ## Resources
 
